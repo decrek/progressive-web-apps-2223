@@ -4,7 +4,6 @@ const rev = require('gulp-rev');
 const override = require('gulp-rev-css-url');
 
 gulp.src([
-  `./static/**/*.{css,js}`,
 ])
   .pipe(filter(file => !file.path.endsWith('/service-worker.js')))
   .pipe(rev())

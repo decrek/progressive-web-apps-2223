@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const fetch = require('node-fetch')
 const compression = require('compression')
-const revManifest = require('./static/rev-manifest')
+// const revManifest = require('./static/rev-manifest')
 
 const app = express()
 const port = 3000
@@ -24,7 +24,7 @@ app.set('views', 'views');
 app.get('/', (req, res) => {
   res.render('home', {
     title: 'Home',
-    revManifest
+    // revManifest
   });
 })
 
@@ -35,15 +35,15 @@ app.get('/movies', (req, res) => {
       res.render('overview', {
         title: 'Movies',
         movieData,
-        revManifest
+        // revManifest
       });
     })
 })
 
 app.get('/offline', (req, res) => {
   res.render('offline', {
-    revManifest
-  })
+    title: 'Offline',
+  });
 })
 
 app.get('/movies/:id', (req, res) => {
@@ -52,13 +52,22 @@ app.get('/movies/:id', (req, res) => {
     fetch(`https://api.themoviedb.org/3/movie/${req.params.id}/videos?api_key=${process.env.MOVIEDB_TOKEN}`).then(response => response.json())
   ])
     .then(([details, videos]) => {
+      if (details.status_code && details.status_code === 34) {
+        throw new Error('Movie not found')
+      }
+
       res.render('detail', {
         title: details.original_title,
         movieData: {
           ...details,
           videos: videos.results
         },
-        revManifest
+      });
+    })
+    .catch(err => {
+      res.status(404).render('404', {
+        title: '404',
+        message: err.message,
       });
     })
 })
@@ -70,7 +79,6 @@ app.get('/search', (req, res) => {
       const templateData = {
         query: req.query.query,
         movieData,
-        revManifest
       }
 
       if (req.query.async) {

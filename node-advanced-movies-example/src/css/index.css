@@ -3,6 +3,7 @@
 @import "typography.css";
 
 .header {
+  background: red;
   display: flex;
   align-items: center;
   margin: 10px;

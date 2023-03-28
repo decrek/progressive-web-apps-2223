@@ -2,7 +2,7 @@ const gulp = require('gulp')
 
 return gulp.src([
   './src/images/**/*.*',
-  './src/service-worker.js',
   './src/manifest.json',
+  './src/service-worker.js',
 ])
   .pipe(gulp.dest('./static/'))
